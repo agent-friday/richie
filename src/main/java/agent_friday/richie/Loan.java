@@ -3,6 +3,11 @@ package agent_friday.richie;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+/**
+ * Class to represent a loan and perform a couple of calculations based on a provided values.
+ *
+ * Formulas used were taken from <a href="https://www.calculatorsoup.com/calculators/financial/loan-calculator.php">https://www.calculatorsoup.com/calculators/financial/loan-calculator.php</a>
+ */
 public class Loan {
 
   public static final int MONTHS_IN_YEAR = 12;
