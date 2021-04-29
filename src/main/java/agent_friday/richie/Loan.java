@@ -7,7 +7,7 @@ public class Loan {
 
   public static final int MONTHS_IN_YEAR = 12;
 
-  private int term;
+  private int term; // in months
   private BigDecimal principal;
   private BigDecimal monthlyPmt;
   private BigDecimal annualInterest;
@@ -26,26 +26,44 @@ public class Loan {
     this.term = term;
   }
 
+  /**
+   * @return the initial loan amount
+   */
   public BigDecimal getPrincipal() {
     return principal;
   }
 
+  /**
+   * @param principal the initial loan amount
+   */
   public void setPrincipal(BigDecimal principal) {
     this.principal = principal;
   }
 
+  /**
+   * @return the monthly repayment amount
+   */
   public BigDecimal getMonthlyPmt() {
     return monthlyPmt;
   }
 
+  /**
+   * @param monthlyPmt the monthly repayment amount
+   */
   public void setMonthlyPmt(BigDecimal monthlyPmt) {
     this.monthlyPmt = monthlyPmt;
   }
 
+  /**
+   * @return the annual interest rate
+   */
   public BigDecimal getAnnualInterest() {
     return annualInterest;
   }
 
+  /**
+   * @param annualInterest the annual interest rate
+   */
   public void setAnnualInterest(BigDecimal annualInterest) {
     this.annualInterest = annualInterest;
   }
@@ -84,5 +102,43 @@ public class Loan {
         .divide(ratePowN.subtract(one), MathContext.DECIMAL128));
 
     return this.monthlyPmt;
+  }
+
+  /**
+   * Calculates the available loan amount given the desired monthly payment, loan term, and annual
+   * interest rate, using the following formula:
+   * <p>
+   * <pre>
+   *            __             __
+   *       PMT  |         1     |
+   * PV = ----- | 1 - --------- |
+   *        i   |     (1 + i)^n |
+   *            __             __
+   * </pre>
+   * <p>
+   * where,
+   * <p>
+   * PMT = desired monthly payment<br /> i = monthly interest rate (annual interest rate / 12)<br />
+   * n = loan term in months<br />
+   *
+   * @return the loan amount that is possible
+   */
+  public BigDecimal calcLoan() {
+    final BigDecimal one = new BigDecimal(1);
+
+    // i
+    final BigDecimal monthlyInt = annualInterest.divide(new BigDecimal(MONTHS_IN_YEAR),
+        MathContext.DECIMAL128);
+
+    // 1 + i
+    final BigDecimal monthlyIntAndOne = monthlyInt.add(one);
+
+    // (1 + i)^n
+    final BigDecimal ratePowN = monthlyIntAndOne.pow(term);
+
+    setPrincipal(this.monthlyPmt.divide(monthlyInt, MathContext.DECIMAL128)
+        .multiply(one.subtract(one.divide(ratePowN, MathContext.DECIMAL128))));
+
+    return this.principal;
   }
 }
