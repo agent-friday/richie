@@ -44,7 +44,7 @@ public class ClientFrame extends JFrame implements FocusListener {
   }
 
   private void init() {
-    this.setSize(400, 300);
+    this.setSize(400, 375);
     this.setLocationRelativeTo(null);
 
     JLabel interestLabel = new JLabel("Annual Interest Rate (%)");
@@ -89,53 +89,59 @@ public class ClientFrame extends JFrame implements FocusListener {
 
     JPanel panel = new JPanel(new GridBagLayout());
 
-    int row = 0;
     Insets insets = new Insets(5, 5, 5, 5);
+    GridBagConstraints leftColConstraints = new GridBagConstraints(
+        GridBagConstraints.RELATIVE, // col
+        GridBagConstraints.RELATIVE, // row
+        1, // grid-width
+        1, // grid-height
+        0.0, // weight-x
+        0.0, // weight-y
+        GridBagConstraints.EAST, // anchor
+        GridBagConstraints.NONE, // fill
+        insets, // Insets
+        0,// ipad-x
+        0 // ipad-y
+    );
 
-    panel.add(loanLabel, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, insets, 0, 0));
-    panel.add(loanTF, new GridBagConstraints(1, row, 1, 1, 0.0, 1.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, insets, 0, 0));
+    GridBagConstraints rightColConstraints = new GridBagConstraints(
+        GridBagConstraints.RELATIVE, // col
+        GridBagConstraints.RELATIVE, // row
+        GridBagConstraints.REMAINDER, // grid-width
+        1, // grid-height
+        1.0, // weight-x
+        0.0, // weight-y
+        GridBagConstraints.WEST, // anchor
+        GridBagConstraints.HORIZONTAL, // fill
+        insets, // Insets
+        0, // ipad-x
+        0 // ipad-y
+    );
 
-    row++;
-    panel.add(interestLabel, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, insets, 0, 0));
-    panel.add(interestTF, new GridBagConstraints(1, row, 1, 1, 0.0, 1.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, insets, 0, 0));
+    panel.add(loanLabel, leftColConstraints);
+    panel.add(loanTF, rightColConstraints);
 
-    row++;
-    panel.add(termLabel, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, insets, 0, 0));
-    panel.add(termTF, new GridBagConstraints(1, row, 1, 1, 0.0, 1.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, insets, 0, 0));
+    panel.add(interestLabel, leftColConstraints);
+    panel.add(interestTF, rightColConstraints);
 
-    row++;
-    panel.add(monthlyLabel, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, insets, 0, 0));
-    panel.add(monthlyTF, new GridBagConstraints(1, row, 1, 1, 0.0, 1.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, insets, 0, 0));
+    panel.add(termLabel, leftColConstraints);
+    panel.add(termTF, rightColConstraints);
 
-    row++;
-    panel.add(isMortgage, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, insets, 0, 0));
+    panel.add(monthlyLabel, leftColConstraints);
+    panel.add(monthlyTF, rightColConstraints);
 
-    row++;
-    panel.add(hoaLabel, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, insets, 0, 0));
-    panel.add(hoaTF, new GridBagConstraints(1, row, 1, 1, 0.0, 1.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, insets, 0, 0));
+    panel.add(isMortgage,
+        new GridBagConstraints(1, GridBagConstraints.RELATIVE, GridBagConstraints.REMAINDER, 1, 1.0,
+            0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, insets, 0, 0));
 
-    row++;
-    panel.add(taxesLabel, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, insets, 0, 0));
-    panel.add(taxesTF, new GridBagConstraints(1, row, 1, 1, 0.0, 1.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, insets, 0, 0));
+    panel.add(hoaLabel, leftColConstraints);
+    panel.add(hoaTF, rightColConstraints);
 
-    row++;
-    panel.add(overallLabel, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, insets, 0, 0));
-    panel.add(overallTF, new GridBagConstraints(1, row, 1, 1, 0.0, 1.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, insets, 0, 0));
+    panel.add(taxesLabel, leftColConstraints);
+    panel.add(taxesTF, rightColConstraints);
+
+    panel.add(overallLabel, leftColConstraints);
+    panel.add(overallTF, rightColConstraints);
 
     panel.add(buttonPanel,
         new GridBagConstraints(0, GridBagConstraints.RELATIVE, GridBagConstraints.REMAINDER, 1, 1.0,
@@ -145,13 +151,11 @@ public class ClientFrame extends JFrame implements FocusListener {
     this.add(panel);
   }
 
-  private void setMortgageAmts() {
-    Mortgage mort = (Mortgage) loan;
-
-    String taxes = taxesTF.getText();
+  private String getMoneyString(JTextField jtf) {
+    String value = jtf.getText();
     try {
-      if (taxes != null && !taxes.isEmpty()) {
-        taxes = currencyFormat.parse(taxesTF.getText()).toString();
+      if (value != null && !value.isEmpty()) {
+        value = currencyFormat.parse(jtf.getText()).toString();
       }
     } catch (ParseException e) {
       JOptionPane
@@ -160,38 +164,23 @@ public class ClientFrame extends JFrame implements FocusListener {
       e.printStackTrace();
     }
 
+    return value;
+  }
+
+  private void setMortgageAmounts() {
+    Mortgage mort = (Mortgage) loan;
+
+    String taxes = getMoneyString(taxesTF);
     if (taxes != null && !taxes.isEmpty()) {
       mort.setPropertyTaxes(new BigDecimal(taxes));
     }
 
-    String hoa = hoaTF.getText();
-    try {
-      if (hoa != null && !hoa.isEmpty()) {
-        hoa = currencyFormat.parse(hoa).toString();
-      }
-    } catch (ParseException e) {
-      JOptionPane
-          .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      e.printStackTrace();
-    }
-
+    String hoa = getMoneyString(hoaTF);
     if (hoa != null && !hoa.isEmpty()) {
       mort.setHoaDues(new BigDecimal(hoa));
     }
 
-    String overall = overallTF.getText();
-    try {
-      if (overall != null && !overall.isEmpty()) {
-        overall = currencyFormat.parse(overall).toString();
-      }
-    } catch (ParseException e) {
-      JOptionPane
-          .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      e.printStackTrace();
-    }
-
+    String overall = getMoneyString(overallTF);
     if (overall != null && !overall.isEmpty()) {
       mort.setOverallMonthly(new BigDecimal(overall));
     }
@@ -210,72 +199,52 @@ public class ClientFrame extends JFrame implements FocusListener {
       mort.setMonthlyPmt(monthlyMortPayment);
       monthlyTF.setText(currencyFormat.format(monthlyMortPayment));
     }
-  } // End setMortgageAmts
+  } // End setMortgageAmounts
 
   private void calcLoanAmt() {
     if (isMortgage.isSelected()) {
-      setMortgageAmts();
+      setMortgageAmounts();
     }
 
-    String pmt = null;
-    try {
-      pmt = currencyFormat.parse(monthlyTF.getText()).toString();
-    } catch (ParseException e) {
-      JOptionPane
-          .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      e.printStackTrace();
-    }
-
-    if (pmt != null) {
+    String pmt = getMoneyString(monthlyTF);
+    if (pmt != null && !pmt.isEmpty()) {
       loan.setMonthlyPmt(new BigDecimal(pmt));
     }
 
-    String rate = null;
-    try {
-      rate = NumberFormat.getInstance(Locale.US).parse(interestTF.getText()).toString();
-    } catch (ParseException e) {
-      JOptionPane
-          .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      e.printStackTrace();
-    }
-
-    if (rate != null) {
-      loan.setAnnualInterest(new BigDecimal(rate).divide(hundred, MathContext.DECIMAL128));
-    }
-
-    try {
-      loan.setTerm(Integer.parseInt(termTF.getText()));
-    } catch (NumberFormatException e) {
-      JOptionPane
-          .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      e.printStackTrace();
-    }
+    parseInterestRate();
+    parseLoanTerm();
 
     loanTF.setText(currencyFormat.format(loan.calcLoan()));
-  }
+  } // End calcLoanAmt
 
   private void calcMonthlyPmt() {
     if (isMortgage.isSelected()) {
-      setMortgageAmts();
+      setMortgageAmounts();
     }
 
-    String amt = null;
+    String amt = getMoneyString(loanTF);
+    if (amt != null && !amt.isEmpty()) {
+      loan.setPrincipal(new BigDecimal(amt));
+    }
+
+    parseInterestRate();
+    parseLoanTerm();
+
+    monthlyTF.setText(currencyFormat.format(loan.calcMonthly()));
+  }
+
+  private void parseLoanTerm() {
     try {
-      amt = currencyFormat.parse(loanTF.getText()).toString();
-    } catch (ParseException e) {
+      loan.setTerm(Integer.parseInt(termTF.getText()));
+    } catch (NumberFormatException e) {
       JOptionPane
           .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.ERROR_MESSAGE);
       e.printStackTrace();
     }
+  }
 
-    if (amt != null) {
-      loan.setPrincipal(new BigDecimal(amt));
-    }
-
+  private void parseInterestRate() {
     String rate = null;
     try {
       rate = NumberFormat.getInstance(Locale.US).parse(interestTF.getText()).toString();
@@ -289,17 +258,6 @@ public class ClientFrame extends JFrame implements FocusListener {
     if (rate != null) {
       loan.setAnnualInterest(new BigDecimal(rate).divide(hundred, MathContext.DECIMAL128));
     }
-
-    try {
-      loan.setTerm(Integer.parseInt(termTF.getText()));
-    } catch (NumberFormatException e) {
-      JOptionPane
-          .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      e.printStackTrace();
-    }
-
-    monthlyTF.setText(currencyFormat.format(loan.calcMonthly()));
   }
 
   @Override
@@ -314,12 +272,24 @@ public class ClientFrame extends JFrame implements FocusListener {
       JTextField tf = (JTextField) src;
       try {
         if (tf.getText() != null && !tf.getText().isEmpty()) {
-          tf.setText(currencyFormat.format(usFormat.parse(tf.getText())));
+          tf.setText(currencyFormat.format(getNumber(tf.getText())));
         }
       } catch (ParseException parseException) {
         parseException.printStackTrace();
       }
     }
+  }
+
+  private Number getNumber(String text) throws ParseException {
+    Number n;
+
+    try {
+      n = usFormat.parse(text);
+    } catch (ParseException e) {
+      n = currencyFormat.parse(text);
+    }
+
+    return n;
   }
 
   private void checkStateChange() {
