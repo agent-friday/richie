@@ -5,8 +5,10 @@ import java.math.MathContext;
 
 /**
  * Class to represent a loan and perform a couple of calculations based on a provided values.
- *
- * Formulas used were taken from <a href="https://www.calculatorsoup.com/calculators/financial/loan-calculator.php">https://www.calculatorsoup.com/calculators/financial/loan-calculator.php</a>
+ * <p>
+ * Formulas used were taken from
+ * <a href="https://www.calculatorsoup.com/calculators/financial/loan-calculator.php">
+ * https://www.calculatorsoup.com/calculators/financial/loan-calculator.php</a>
  */
 public class Loan {
 
@@ -94,19 +96,19 @@ public class Loan {
     final BigDecimal one = new BigDecimal(1);
 
     // i
-    final BigDecimal monthlyInt = annualInterest.divide(new BigDecimal(MONTHS_IN_YEAR),
+    final BigDecimal monthlyInt = getAnnualInterest().divide(new BigDecimal(MONTHS_IN_YEAR),
         MathContext.DECIMAL128);
 
     // 1 + i
     final BigDecimal monthlyIntAndOne = monthlyInt.add(one);
 
     // (1 + i)^n
-    final BigDecimal ratePowN = monthlyIntAndOne.pow(term);
+    final BigDecimal ratePowN = monthlyIntAndOne.pow(getTerm());
 
-    setMonthlyPmt(monthlyInt.multiply(principal).multiply(ratePowN)
+    setMonthlyPmt(monthlyInt.multiply(getPrincipal()).multiply(ratePowN)
         .divide(ratePowN.subtract(one), MathContext.DECIMAL128));
 
-    return this.monthlyPmt;
+    return getMonthlyPmt();
   }
 
   /**
@@ -132,18 +134,18 @@ public class Loan {
     final BigDecimal one = new BigDecimal(1);
 
     // i
-    final BigDecimal monthlyInt = annualInterest.divide(new BigDecimal(MONTHS_IN_YEAR),
+    final BigDecimal monthlyInt = getAnnualInterest().divide(new BigDecimal(MONTHS_IN_YEAR),
         MathContext.DECIMAL128);
 
     // 1 + i
     final BigDecimal monthlyIntAndOne = monthlyInt.add(one);
 
     // (1 + i)^n
-    final BigDecimal ratePowN = monthlyIntAndOne.pow(term);
+    final BigDecimal ratePowN = monthlyIntAndOne.pow(getTerm());
 
-    setPrincipal(this.monthlyPmt.divide(monthlyInt, MathContext.DECIMAL128)
+    setPrincipal(getMonthlyPmt().divide(monthlyInt, MathContext.DECIMAL128)
         .multiply(one.subtract(one.divide(ratePowN, MathContext.DECIMAL128))));
 
-    return this.principal;
+    return getPrincipal();
   }
 }

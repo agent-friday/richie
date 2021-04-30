@@ -158,10 +158,8 @@ public class ClientFrame extends JFrame implements FocusListener {
         value = currencyFormat.parse(jtf.getText()).toString();
       }
     } catch (ParseException e) {
-      JOptionPane
-          .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      e.printStackTrace();
+      showError(e);
+      value = null;
     }
 
     return value;
@@ -201,6 +199,12 @@ public class ClientFrame extends JFrame implements FocusListener {
     }
   } // End setMortgageAmounts
 
+  private void updateOverallMonthly() {
+    Mortgage mort = (Mortgage) loan;
+
+    overallTF.setText(currencyFormat.format(mort.getOverallMonthly()));
+  }
+
   private void calcLoanAmt() {
     if (isMortgage.isSelected()) {
       setMortgageAmounts();
@@ -209,12 +213,24 @@ public class ClientFrame extends JFrame implements FocusListener {
     String pmt = getMoneyString(monthlyTF);
     if (pmt != null && !pmt.isEmpty()) {
       loan.setMonthlyPmt(new BigDecimal(pmt));
+    } else {
+      showError("Monthly payment can't be empty.");
+      return;
     }
 
-    parseInterestRate();
-    parseLoanTerm();
+    try {
+      parseInterestRate();
+      parseLoanTerm();
+    } catch (ParseException | NumberFormatException e) {
+      showError(e);
+      return;
+    }
 
     loanTF.setText(currencyFormat.format(loan.calcLoan()));
+
+    if (isMortgage.isSelected()) {
+      updateOverallMonthly();
+    }
   } // End calcLoanAmt
 
   private void calcMonthlyPmt() {
@@ -225,37 +241,42 @@ public class ClientFrame extends JFrame implements FocusListener {
     String amt = getMoneyString(loanTF);
     if (amt != null && !amt.isEmpty()) {
       loan.setPrincipal(new BigDecimal(amt));
+    } else {
+      showError("Loan amount cannot be empty.");
+      return;
     }
 
-    parseInterestRate();
-    parseLoanTerm();
+    try {
+      parseInterestRate();
+      parseLoanTerm();
+    } catch (ParseException | NumberFormatException e) {
+      showError(e);
+      return;
+    }
 
     monthlyTF.setText(currencyFormat.format(loan.calcMonthly()));
   }
 
-  private void parseLoanTerm() {
-    try {
-      loan.setTerm(Integer.parseInt(termTF.getText()));
-    } catch (NumberFormatException e) {
-      JOptionPane
-          .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      e.printStackTrace();
+  private void parseLoanTerm() throws NumberFormatException {
+    String term = termTF.getText();
+    if (term == null || term.isEmpty()) {
+      showError("Interest rate cannot be null.");
+      return;
     }
+
+    loan.setTerm(Integer.parseInt(term));
   }
 
-  private void parseInterestRate() {
-    String rate = null;
-    try {
-      rate = NumberFormat.getInstance(Locale.US).parse(interestTF.getText()).toString();
-    } catch (ParseException e) {
-      JOptionPane
-          .showConfirmDialog(this, e, "Error", JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      e.printStackTrace();
+  private void parseInterestRate() throws ParseException {
+    String rate = interestTF.getText();
+    if (rate == null || rate.isEmpty()) {
+      showError("Interest rate cannot be null.");
+      return;
     }
 
-    if (rate != null) {
+    rate = NumberFormat.getInstance(Locale.US).parse(rate).toString();
+
+    if (rate != null && !rate.isEmpty()) {
       loan.setAnnualInterest(new BigDecimal(rate).divide(hundred, MathContext.DECIMAL128));
     }
   }
@@ -275,7 +296,7 @@ public class ClientFrame extends JFrame implements FocusListener {
           tf.setText(currencyFormat.format(getNumber(tf.getText())));
         }
       } catch (ParseException parseException) {
-        parseException.printStackTrace();
+        showError("Could not parse amount.");
       }
     }
   }
@@ -302,5 +323,10 @@ public class ClientFrame extends JFrame implements FocusListener {
     } else {
       loan = new Loan();
     }
+  }
+
+  private void showError(Object error) {
+    JOptionPane.showConfirmDialog(this, error, "Error", JOptionPane.OK_CANCEL_OPTION,
+        JOptionPane.ERROR_MESSAGE);
   }
 }
