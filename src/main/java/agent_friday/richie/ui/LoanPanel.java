@@ -1,5 +1,6 @@
-package agent_friday.richie;
+package agent_friday.richie.ui;
 
+import agent_friday.richie.Loan;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;

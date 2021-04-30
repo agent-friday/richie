@@ -1,4 +1,4 @@
-package agent_friday.richie;
+package agent_friday.richie.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

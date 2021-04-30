@@ -1,5 +1,7 @@
-package agent_friday.richie;
+package agent_friday.richie.ui;
 
+import agent_friday.richie.Loan;
+import agent_friday.richie.Mortgage;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import javax.swing.JLabel;
