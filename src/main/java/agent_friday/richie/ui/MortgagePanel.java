@@ -75,6 +75,8 @@ public class MortgagePanel extends LoanPanel {
 
   private void updateOverallMonthly() {
     Mortgage mort = (Mortgage) loan;
-    overallTF.setText(CURRENCY_FORMAT.format(mort.getOverallMonthly()));
+    if (mort.getOverallMonthly() != null) {
+      overallTF.setText(CURRENCY_FORMAT.format(mort.getOverallMonthly()));
+    }
   }
 }
