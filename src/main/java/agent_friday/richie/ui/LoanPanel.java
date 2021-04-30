@@ -74,7 +74,7 @@ public class LoanPanel extends JPanel implements FocusListener {
 
     addTextField("Loan Amount", loanTF, true);
     addTextField("Annual Interest Rate (%)", interestTF, false);
-    addTextField("Loan Term", termTF, false);
+    addTextField("Loan Term (Months)", termTF, false);
     addTextField("Monthly Loan Payment", monthlyTF, true);
   }
 
