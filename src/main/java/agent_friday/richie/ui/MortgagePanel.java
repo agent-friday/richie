@@ -4,7 +4,6 @@ import agent_friday.richie.Loan;
 import agent_friday.richie.Mortgage;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class MortgagePanel extends LoanPanel {
@@ -19,26 +18,9 @@ public class MortgagePanel extends LoanPanel {
   }
 
   private void init() {
-    JLabel hoaLabel = new JLabel("HOA Fees");
-    hoaLabel.setLabelFor(hoaTF);
-    hoaTF.addFocusListener(this);
-
-    JLabel taxesLabel = new JLabel("Property Taxes");
-    taxesLabel.setLabelFor(taxesTF);
-    taxesTF.addFocusListener(this);
-
-    JLabel overallLabel = new JLabel("Overall Monthly Payment");
-    overallLabel.setLabelFor(overallTF);
-    overallTF.addFocusListener(this);
-
-    this.add(hoaLabel, leftColConstraints);
-    this.add(hoaTF, rightColConstraints);
-
-    this.add(taxesLabel, leftColConstraints);
-    this.add(taxesTF, rightColConstraints);
-
-    this.add(overallLabel, leftColConstraints);
-    this.add(overallTF, rightColConstraints);
+    addTextField("HOA Fees", hoaTF, true);
+    addTextField("Property Taxes", taxesTF, true);
+    addTextField("Overall Monthly Payment", overallTF, true);
   }
 
   @Override

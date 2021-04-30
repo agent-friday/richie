@@ -72,31 +72,20 @@ public class LoanPanel extends JPanel implements FocusListener {
   private void init() {
     this.setLayout(new GridBagLayout());
 
-    JLabel interestLabel = new JLabel("Annual Interest Rate (%)");
-    interestLabel.setLabelFor(interestTF);
+    addTextField("Loan Amount", loanTF, true);
+    addTextField("Annual Interest Rate (%)", interestTF, false);
+    addTextField("Loan Term", termTF, false);
+    addTextField("Monthly Loan Payment", monthlyTF, true);
+  }
 
-    JLabel loanLabel = new JLabel("Loan Amount");
-    loanLabel.setLabelFor(loanTF);
-    loanTF.addFocusListener(this);
-
-    JLabel termLabel = new JLabel("Loan Term");
-    termLabel.setLabelFor(termTF);
-
-    JLabel monthlyLabel = new JLabel("Monthly Loan Payment");
-    monthlyLabel.setLabelFor(monthlyTF);
-    monthlyTF.addFocusListener(this);
-
-    this.add(loanLabel, leftColConstraints);
-    this.add(loanTF, rightColConstraints);
-
-    this.add(interestLabel, leftColConstraints);
-    this.add(interestTF, rightColConstraints);
-
-    this.add(termLabel, leftColConstraints);
-    this.add(termTF, rightColConstraints);
-
-    this.add(monthlyLabel, leftColConstraints);
-    this.add(monthlyTF, rightColConstraints);
+  protected void addTextField(String label, JTextField textField, boolean addFocusListener) {
+    JLabel jLabel = new JLabel(label);
+    jLabel.setLabelFor(textField);
+    if (addFocusListener) {
+      textField.addFocusListener(this);
+    }
+    add(jLabel, leftColConstraints);
+    add(textField, rightColConstraints);
   }
 
   public void calcLoanAmt() {
