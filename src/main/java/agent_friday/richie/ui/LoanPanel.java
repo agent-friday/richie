@@ -129,6 +129,33 @@ public class LoanPanel extends JPanel implements FocusListener {
     monthlyTF.setText(CURRENCY_FORMAT.format(loan.calcMonthly()));
   } // End calcMonthlyPmt
 
+  public void calcLoanTerm() {
+    String amt = getMoneyString(loanTF);
+    if (amt != null && !amt.isEmpty()) {
+      loan.setPrincipal(new BigDecimal(amt));
+    } else {
+      showError("Loan amount cannot be empty.");
+      return;
+    }
+
+    String pmt = getMoneyString(monthlyTF);
+    if (pmt != null && !pmt.isEmpty()) {
+      loan.setMonthlyPmt(new BigDecimal(pmt));
+    } else {
+      showError("Monthly payment can't be empty.");
+      return;
+    }
+
+    try {
+      parseInterestRate();
+    } catch (ParseException | NumberFormatException e) {
+      showError(e);
+      return;
+    }
+
+    termTF.setText("" + loan.calcTerm());
+  }
+
   protected String getMoneyString(JTextField jtf) {
     String value = jtf.getText();
     try {

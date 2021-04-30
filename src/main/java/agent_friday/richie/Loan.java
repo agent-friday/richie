@@ -30,7 +30,7 @@ public class Loan {
    * @param term the length of the loan term in months
    */
   public void setTerm(int term) {
-    this.term = term;
+    this.term = Math.abs(term);
   }
 
   /**
@@ -147,5 +147,47 @@ public class Loan {
         .multiply(one.subtract(one.divide(ratePowN, MathContext.DECIMAL128))));
 
     return getPrincipal();
+  }
+
+  /**
+   * Calculates the loan term given the initial loan amount, the annual interest rate, and the
+   * monthly payment, using the following formula
+   * <p>
+   * <pre>
+   *        __             __
+   *        |      1        |
+   *        | ------------- |
+   *     ln |      i(PV)    |
+   *        | 1 - -------   |
+   *        |       PMT     |
+   *        __             __
+   * n = -----------------------
+   *          ln(1 + i)
+   * </pre>
+   * <p>
+   * where,
+   * <p>
+   * PV = the initial loan principal<br />PMT = the monthly payment<br /> i = monthly interest rate
+   * (annual interest rate / 12)<br />
+   *
+   * @return the length of the loan in months
+   */
+  public int calcTerm() {
+    final BigDecimal one = new BigDecimal(1);
+
+    // i
+    final BigDecimal monthlyInt = getAnnualInterest().divide(new BigDecimal(MONTHS_IN_YEAR),
+        MathContext.DECIMAL128);
+    // 1 + i
+    final BigDecimal monthlyIntAndOne = monthlyInt.add(one);
+
+    final BigDecimal natLog = BigDecimal.valueOf(Math.log(monthlyIntAndOne.doubleValue()));
+
+    final BigDecimal numerator = BigDecimal.valueOf(Math.log(one.subtract(
+        monthlyInt.multiply(getPrincipal()).divide(getMonthlyPmt(), MathContext.DECIMAL128))
+        .doubleValue()));
+
+    setTerm(numerator.divide(natLog, MathContext.DECIMAL128).intValue());
+    return getTerm();
   }
 }

@@ -25,16 +25,19 @@ public class ClientFrame extends JFrame implements ChangeListener {
   }
 
   private void init() {
-    this.setSize(400, 375);
+    this.setSize(550, 375);
     this.setLocationRelativeTo(null);
 
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     JButton monthlyButton = new JButton("Calculate Monthly");
     JButton loanAmtButton = new JButton("Calculate Loan Amount");
+    JButton termButton = new JButton("Calculate Loan Term");
 
     monthlyButton.addActionListener((ActionEvent e) -> currentPanel.calcMonthlyPmt());
     loanAmtButton.addActionListener((ActionEvent e) -> currentPanel.calcLoanAmt());
+    termButton.addActionListener((ActionEvent e) -> currentPanel.calcLoanTerm());
 
+    buttonPanel.add(termButton);
     buttonPanel.add(monthlyButton);
     buttonPanel.add(loanAmtButton);
 
