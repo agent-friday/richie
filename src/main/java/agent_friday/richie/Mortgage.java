@@ -67,7 +67,7 @@ public class Mortgage extends Loan {
    */
   @Override
   public BigDecimal calcMonthly() {
-    BigDecimal monthly = super.calcMonthly();
+    BigDecimal monthly = new BigDecimal(super.calcMonthly().toPlainString());
 
     if (getHoaDues() != null) {
       monthly = monthly.add(getHoaDues());
@@ -79,6 +79,6 @@ public class Mortgage extends Loan {
     }
     setOverallMonthly(monthly);
 
-    return monthly;
+    return getMonthlyPmt();
   }
 }
