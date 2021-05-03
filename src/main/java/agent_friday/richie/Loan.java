@@ -14,6 +14,8 @@ public class Loan {
 
   public static final int MONTHS_IN_YEAR = 12;
 
+  private static final BigDecimal ONE = new BigDecimal(1);
+
   private int term; // in months
   private BigDecimal principal;
   private BigDecimal monthlyPmt;
@@ -93,20 +95,18 @@ public class Loan {
    * @return the monthly payment
    */
   public BigDecimal calcMonthly() {
-    final BigDecimal one = new BigDecimal(1);
-
     // i
     final BigDecimal monthlyInt = getAnnualInterest().divide(new BigDecimal(MONTHS_IN_YEAR),
         MathContext.DECIMAL128);
 
     // 1 + i
-    final BigDecimal monthlyIntAndOne = monthlyInt.add(one);
+    final BigDecimal monthlyIntAndOne = monthlyInt.add(ONE);
 
     // (1 + i)^n
     final BigDecimal ratePowN = monthlyIntAndOne.pow(getTerm());
 
     setMonthlyPmt(monthlyInt.multiply(getPrincipal()).multiply(ratePowN)
-        .divide(ratePowN.subtract(one), MathContext.DECIMAL128));
+        .divide(ratePowN.subtract(ONE), MathContext.DECIMAL128));
 
     return getMonthlyPmt();
   }
@@ -131,20 +131,18 @@ public class Loan {
    * @return the loan amount that is possible
    */
   public BigDecimal calcLoan() {
-    final BigDecimal one = new BigDecimal(1);
-
     // i
     final BigDecimal monthlyInt = getAnnualInterest().divide(new BigDecimal(MONTHS_IN_YEAR),
         MathContext.DECIMAL128);
 
     // 1 + i
-    final BigDecimal monthlyIntAndOne = monthlyInt.add(one);
+    final BigDecimal monthlyIntAndOne = monthlyInt.add(ONE);
 
     // (1 + i)^n
     final BigDecimal ratePowN = monthlyIntAndOne.pow(getTerm());
 
     setPrincipal(getMonthlyPmt().divide(monthlyInt, MathContext.DECIMAL128)
-        .multiply(one.subtract(one.divide(ratePowN, MathContext.DECIMAL128))));
+        .multiply(ONE.subtract(ONE.divide(ratePowN, MathContext.DECIMAL128))));
 
     return getPrincipal();
   }
@@ -173,17 +171,17 @@ public class Loan {
    * @return the length of the loan in months
    */
   public int calcTerm() {
-    final BigDecimal one = new BigDecimal(1);
-
     // i
     final BigDecimal monthlyInt = getAnnualInterest().divide(new BigDecimal(MONTHS_IN_YEAR),
         MathContext.DECIMAL128);
-    // 1 + i
-    final BigDecimal monthlyIntAndOne = monthlyInt.add(one);
 
+    // 1 + i
+    final BigDecimal monthlyIntAndOne = monthlyInt.add(ONE);
+
+    // ln(1 + i)
     final BigDecimal natLog = BigDecimal.valueOf(Math.log(monthlyIntAndOne.doubleValue()));
 
-    final BigDecimal numerator = BigDecimal.valueOf(Math.log(one.subtract(
+    final BigDecimal numerator = BigDecimal.valueOf(Math.log(ONE.subtract(
         monthlyInt.multiply(getPrincipal()).divide(getMonthlyPmt(), MathContext.DECIMAL128))
         .doubleValue()));
 
